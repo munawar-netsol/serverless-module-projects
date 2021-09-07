@@ -1,0 +1,1 @@
+process.env.tableName = 'player-point-aws';

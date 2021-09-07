@@ -1,0 +1,74 @@
+service: projects
+frameworkVersion: '2'
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  lambdaHashingVersion: 20201221
+  profile: serverlessUser
+  region: us-east-1
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:*
+        - s3:*
+      Resource: '*'
+  environment:
+    tableName: ${self:custom.tableName}
+
+custom:
+  tableName: player-point-aws
+  dynamodb:
+    stages:
+      - dev
+    start:
+      port: 8014
+      inMemory: true
+      migrate: true
+    migration:
+      dir: offline/migrations/player-point-local.json
+  scripts:
+    hooks:
+      'aws:common:validate:validate' : jest --setupFiles ./jest/setEnvVars  # When AWS is validate cloudformation 
+plugins:
+  - serverless-offline
+  - serverless-dynamodb-local
+  - serverless-plugin-scripts
+  - serverless-webpack
+  
+package:
+  - individually: true
+  
+functions:
+  hello:
+    handler: handler.hello
+  createPlayerScore:
+    handler: restapis/createPlayerScore.handler
+    events:
+      - http:
+          path: put-player-score/{ID}
+          method: post
+          cors: true
+  getPlayerScore:
+    handler: restapis/getPlayerScore.handler
+    events:
+      - http:
+          path: get-player-score/{ID}
+          method: get
+          cors: true
+
+resources:
+  Resources:
+    MyDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.tableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5

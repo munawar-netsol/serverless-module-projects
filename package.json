@@ -1,0 +1,29 @@
+{
+  "name": "Projects",
+  "version": "1.0.0",
+  "description": "",
+  "main": "handler.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "jest --setupFiles ./jest/setEnvVars",
+    "start": "sls offline start",
+    "deploy": "sls deploy"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jest": "^27.1.0",
+    "jest-dynalite": "^3.4.1",
+    "serverless-dynamodb-local": "^0.2.40",
+    "serverless-offline": "^8.1.0",
+    "serverless-plugin-scripts": "^1.0.2"
+  },
+  "dependencies": {
+    "aws-sdk": "^2.983.0",
+    "serverless-webpack": "^5.5.1",
+    "webpack": "^5.50.0"
+  }
+}
