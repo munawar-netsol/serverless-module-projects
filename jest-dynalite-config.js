@@ -1,7 +1,7 @@
 module.exports = {
     tables: [
         {
-            TableName: 'player-point-aws',
+            TableName: 'player-point-ci',
             KeySchema: [
                 {
                     AttributeName: 'ID',

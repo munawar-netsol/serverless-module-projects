@@ -1,1 +1,1 @@
-process.env.tableName = 'player-point-aws';
+process.env.tableName = 'player-point-ci';
