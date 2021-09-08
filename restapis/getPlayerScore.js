@@ -9,7 +9,6 @@ exports.handler = async event => {
         return Responses._400({message: 'Missing the ID from Path!'});
     }
     let ID = event.pathParameters.ID;
-    const user = JSON.parse(event.body);
     
     const newUser = 
         await Dynamo.get(ID, tableName)

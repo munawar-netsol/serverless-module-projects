@@ -49,11 +49,25 @@ functions:
           path: put-player-score/{ID}
           method: post
           cors: true
+  deletePlayerScore:
+    handler: restapis/deletePlayerScore.handler
+    events:
+      - http:
+          path: delete-player-score/{ID}
+          method: delete
+          cors: true
   getPlayerScore:
     handler: restapis/getPlayerScore.handler
     events:
       - http:
           path: get-player-score/{ID}
+          method: get
+          cors: true
+  queryPlayerScore:
+    handler: restapis/queryPlayerScore.handler
+    events:
+      - http:
+          path: query-player-score/{ID}
           method: get
           cors: true
 
@@ -66,9 +80,21 @@ resources:
         AttributeDefinitions:
           - AttributeName: ID
             AttributeType: S
+          - AttributeName: game
+            AttributeType: S
         KeySchema:
           - AttributeName: ID
             KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: game-index
+            KeySchema:
+                - AttributeName: game
+                  KeyType: HASH
+            Projection:
+                ProjectionType: ALL
+            ProvisionedThroughput:
+                ReadCapacityUnits: 5
+                WriteCapacityUnits: 5
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5

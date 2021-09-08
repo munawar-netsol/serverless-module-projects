@@ -13,6 +13,22 @@ module.exports = {
                     AttributeName: 'ID',
                     AttributeType: 'S',
                 },
+                {
+                    AttributeName: 'game',
+                    AttributeType: 'S',
+                },
+            ],
+            GlobalSecondaryIndexes:[
+                {
+                    IndexName: "game-index",
+                    Projection: {
+                        ProjectionType: "ALL"
+                    },
+                    KeySchema:[{
+                        KeyType:"HASH",
+                        AttributeName: "game"
+                    }]
+                }
             ],
             BillingMode: 'PAY_PER_REQUEST',
         },

@@ -18,11 +18,11 @@ const documentClient = new AWS.DynamoDB.DocumentClient(options);
 
 
 const Dynamo = {
-    async get(ID, tableName) {
+    async get(id, tableName) {
         const params = {
             TableName: tableName,
             Key : {
-                ID
+                ID: id
             }
         }
         const data = await documentClient.get(params).promise();
@@ -44,6 +44,35 @@ const Dynamo = {
             throw Error ('Error writing the data for ${user.ID} from ${tableName}');
         
         return user;
+    },
+
+    async delete(user, tableName) {
+        const params = {
+            TableName: tableName,
+            Key: {
+                ID: user
+              }
+        }
+        const res = await documentClient.delete(params).promise();
+        
+        if (!res)
+            throw Error ('Error writing the data for ${user.ID} from ${tableName}');
+        
+        return params.Key;
+    },
+    async getQuery(index, key, value, tableName) {
+        var params = {
+            TableName: tableName,
+            IndexName: index,
+            KeyConditionExpression: `${key} = :hkey`, //'HashKey = :hkey and RangeKey > :rkey',
+            ExpressionAttributeValues: { ':hkey': `${value}` }
+          };
+          
+          const res = await documentClient.query(params).promise();
+            
+        if (!res)
+            throw Error ('Error writing the data for ${user.ID} from ${tableName}');
+        return res.Items;
     }
 
 };
