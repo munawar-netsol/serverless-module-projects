@@ -1,5 +1,5 @@
 {
-  "name": "Projects",
+  "name": "projects",
   "version": "1.0.0",
   "description": "",
   "main": "handler.js",
@@ -7,7 +7,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "jest --setupFiles ./jest/setEnvVars",
+    "test": "jest --runInBand --setupFiles ./jest/setEnvVars",
     "start": "sls offline start",
     "deploy": "sls deploy"
   },
@@ -19,11 +19,14 @@
     "jest-dynalite": "^3.4.1",
     "serverless-dynamodb-local": "^0.2.40",
     "serverless-offline": "^8.1.0",
-    "serverless-plugin-scripts": "^1.0.2"
+    "serverless-plugin-scripts": "^1.0.2",
+    "serverless-s3-local": "^0.6.20"
   },
   "dependencies": {
     "aws-sdk": "^2.983.0",
+    "lambda-hooks": "^0.2.1",
     "serverless-webpack": "^5.5.1",
-    "webpack": "^5.50.0"
+    "webpack": "^5.50.0",
+    "yup": "^0.32.9"
   }
 }

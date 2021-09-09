@@ -1,14 +1,15 @@
 const Dynamo = require('../../common/Dynamo');
 
-const validTableName = 'player-point-ci';
-const data = { ID: '123', score: 25, name: 'Chirs'};
-test('Dynamo Write Test', async() => {
-    try {
-        const res = await Dynamo.put(data, validTableName);        
-        expect(res.name).toEqual(data.name);
-        
-    }
-    catch(exp) {
-        console.log('Logged Exception : '+ exp);
-    }
-})
+describe('Test Dynamo UnitTest', () => {
+    test('Dynamo Write Test', async() => {
+        try {
+            const validTableName = 'player-point-aws';
+            const data = { ID: '1234', score: 25, name: 'Chirs', game: "1234",gameIndex:"1234"};
+            const res = await Dynamo.put(data, validTableName);        
+            expect(res.name).toEqual(data.name);
+        }
+        catch(exp) {
+            console.log('Logged Exception : '+ exp);
+        }
+    })
+});

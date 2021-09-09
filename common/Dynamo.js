@@ -3,14 +3,14 @@ let options = {};
 if (process.env.IS_OFFLINE) {
     options = {
         region: 'localhost',
-        endpoint: 'http://localhost:8014'
+        endpoint: 'http://localhost:8021'
     }
 }
 
 if (process.env.JEST_WORKER_ID) {
     options = {
         region: 'local-env',
-        endpoint: 'http://localhost:8015',
+        endpoint: 'http://localhost:8022',
         sslEnabled: false
     }    
 }

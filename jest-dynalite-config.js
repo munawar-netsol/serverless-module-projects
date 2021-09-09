@@ -1,7 +1,7 @@
 module.exports = {
     tables: [
         {
-            TableName: 'player-point-ci',
+            TableName: 'player-point-aws',
             KeySchema: [
                 {
                     AttributeName: 'ID',
@@ -33,5 +33,5 @@ module.exports = {
             BillingMode: 'PAY_PER_REQUEST',
         },
     ],
-    basePort: 8014,
+    basePort: 8021,
 };

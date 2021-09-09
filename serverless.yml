@@ -15,27 +15,32 @@ provider:
       Resource: '*'
   environment:
     tableName: ${self:custom.tableName}
+    bucketName: ${self:custom.bucketName}
 
 custom:
   tableName: player-point-aws
+  bucketName: serverlessmoduleprojectbucket1
   dynamodb:
     stages:
       - dev
     start:
-      port: 8014
+      port: 8021
       inMemory: true
       migrate: true
     migration:
       dir: offline/migrations/player-point-local.json
   scripts:
     hooks:
-      'aws:common:validate:validate' : jest --setupFiles ./jest/setEnvVars  # When AWS is validate cloudformation 
+     'aws:common:validate:validate' : jest --runInBand --setupFiles ./jest/setEnvVars  # When AWS is validate cloudformation 
+  s3:
+    host: localhost
+    directory: tmp
 plugins:
   - serverless-offline
   - serverless-dynamodb-local
   - serverless-plugin-scripts
+  - serverless-s3-local
   - serverless-webpack
-  
 package:
   - individually: true
   
@@ -70,9 +75,48 @@ functions:
           path: query-player-score/{ID}
           method: get
           cors: true
-
+  putObject:
+    handler: restapis/putObject.handler
+    events:
+      - http:
+          path: put-object/{fileName}
+          method: post
+          cors: true
+  getPlayerScoreAuthorized:
+    handler: restapis/getPlayerScoreAuthorized.handler
+    events:
+      - http:
+          path: get-player-score-auth/{ID}
+          method: get
+          cors: true
+          authorizer:
+            type: COGNITO_USER_POOLS # TOKEN or REQUEST or COGNITO_USER_POOLS, same as AWS Cloudformation documentation
+            authorizerId:
+              Ref: ApiGatewayAuthorizer # or hard-code Authorizer ID
+            scopes:
+              email
 resources:
   Resources:
+    MyAWSS3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:        
+        BucketName: ${self:custom.bucketName}     
+    MyAWSS3BucketPolicy:
+      Type: AWS::S3::BucketPolicy
+      Properties:
+        Bucket: !Ref MyAWSS3Bucket
+        PolicyDocument:
+          Statement:
+            - Action:
+                - 's3:GetObject'
+              Effect: Allow
+              Resource: !Join
+                - ''
+                - - 'arn:aws:s3:::'
+                  - !Ref MyAWSS3Bucket
+                  - /*
+              Principal: '*'
+
     MyDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
@@ -98,3 +142,64 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+    MyAWSCognitoUserPool:
+      Type: AWS::Cognito::UserPool
+      Properties:
+        UserPoolName: my-cloudform-user-pool
+        Policies:
+            PasswordPolicy:
+                RequireNumbers: true
+                MinimumLength: 8
+                TemporaryPasswordValidityDays: 123
+                RequireUppercase: true
+                RequireLowercase: true
+                RequireSymbols: true
+        UsernameAttributes:
+            - email
+        AutoVerifiedAttributes:
+            - email
+
+    MyAWSCognitoUserPoolClient:
+      Type: AWS::Cognito::UserPoolClient
+      Properties:
+        ClientName: my-cloudform-user-pool-client
+        UserPoolId: !Ref MyAWSCognitoUserPool 
+        AllowedOAuthFlows: 
+          - code
+          - implicit
+        AllowedOAuthFlowsUserPoolClient: true
+        AllowedOAuthScopes: 
+          - phone
+          - email
+          - openid
+          - profile
+          - aws.cognito.signin.user.admin
+        CallbackURLs: 
+          - https://example.com/calback
+        LogoutURLs: 
+          - https://example.com/signout
+        SupportedIdentityProviders: 
+          - COGNITO
+
+    myuserpooldomain: 
+      Type: AWS::Cognito::UserPoolDomain 
+      Properties:
+        UserPoolId: !Ref MyAWSCognitoUserPool
+        Domain: "mydomain123401"
+
+    ApiGatewayAuthorizer:
+      Type: AWS::ApiGateway::Authorizer
+      Properties:
+        AuthorizerResultTtlInSeconds: 300
+        IdentitySource: method.request.header.Authorization
+        Name: Cognito
+        RestApiId:
+          Ref: ApiGatewayRestApi
+        Type: COGNITO_USER_POOLS
+        ProviderARNs:
+          #- arn:aws:cognito-idp:us-east-1:636770137098:userpool/us-east-1_Si8UJdIyc
+          - !Join
+                - ''
+                - - 'arn:aws:cognito-idp:us-east-1:636770137098:'
+                  - userpool/
+                  - !Ref MyAWSCognitoUserPool
