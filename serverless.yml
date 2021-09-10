@@ -108,10 +108,10 @@ functions:
       - websocket:
           route: $disconnect
   websocket-message:
-    handler: chatserver/message.handler
+    handler: chatserver/messages.handler
     events:
       - websocket:
-          route: $message
+          route: $messages
   websocket-default:
     handler: chatserver/default.handler
     events:
