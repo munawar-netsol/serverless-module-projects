@@ -15,10 +15,12 @@ provider:
       Resource: '*'
   environment:
     tableName: ${self:custom.tableName}
+    chatAppTableName: ${self:custom.chatAppTableName}
     bucketName: ${self:custom.bucketName}
 
 custom:
   tableName: player-point-aws
+  chatAppTableName: chat-app-table
   bucketName: serverlessmoduleprojectbucket1
   dynamodb:
     stages:
@@ -95,6 +97,26 @@ functions:
               Ref: ApiGatewayAuthorizer # or hard-code Authorizer ID
             scopes:
               email
+  websocket-connect:
+    handler: chatserver/connect.handler
+    events:
+      - websocket:
+          route: $connect
+  websocket-disconnect:
+    handler: chatserver/disconnect.handler
+    events:
+      - websocket:
+          route: $disconnect
+  websocket-message:
+    handler: chatserver/message.handler
+    events:
+      - websocket:
+          route: $message
+  websocket-default:
+    handler: chatserver/default.handler
+    events:
+      - websocket:
+          route: $default
 resources:
   Resources:
     MyAWSS3Bucket:
@@ -116,6 +138,20 @@ resources:
                   - !Ref MyAWSS3Bucket
                   - /*
               Principal: '*'
+
+    MyDynamoDBTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.chatAppTableName}
+        AttributeDefinitions:
+          - AttributeName: ConnectionId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ConnectionId
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
 
     MyDynamoDBTable:
       Type: AWS::DynamoDB::Table

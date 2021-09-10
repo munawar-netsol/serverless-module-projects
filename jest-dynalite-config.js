@@ -32,6 +32,22 @@ module.exports = {
             ],
             BillingMode: 'PAY_PER_REQUEST',
         },
+        {
+            TableName: 'chat-app-table',
+            KeySchema: [
+                {
+                    AttributeName: 'ConnectionId',
+                    KeyType: 'HASH',
+                },
+            ],
+            AttributeDefinitions: [
+                {
+                    AttributeName: 'ConnectionId',
+                    AttributeType: 'S',
+                }
+            ],
+            BillingMode: 'PAY_PER_REQUEST',
+        }
     ],
     basePort: 8021,
 };

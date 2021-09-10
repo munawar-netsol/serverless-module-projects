@@ -4,6 +4,7 @@ const APIGatewayRequest = ({
     path = '',
     queryStringObject,
     pathParameters,
+    requestContext,
     stageVariables = null,
 }) => {
     const request = {
@@ -17,6 +18,7 @@ const APIGatewayRequest = ({
         queryStringParameters: queryStringObject || null,
         multiValueQueryStringParameters: null,
         stageVariables,
+        /*
         requestContext: {
             accountId: '',
             apiId: '',
@@ -44,6 +46,8 @@ const APIGatewayRequest = ({
             resourceId: '',
             resourcePath: '',
         },
+        */
+        requestContext: requestContext,
         resource: '',
     };
     return request;

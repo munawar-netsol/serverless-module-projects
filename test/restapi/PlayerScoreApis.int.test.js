@@ -1,10 +1,10 @@
+const APIGatewayRequest = require('../../common/getApiGateway');
 const createPlayerScore = require('../../restapis/createPlayerScore');
 const getPlayerScore = require('../../restapis/getPlayerScore');
-const APIGatewayRequest = require('../../common/getApiGateway');
-const Dynamo = require('../../common/Dynamo');
+const deletePlayerScore = require('../../restapis/deletePlayerScore');
 
-describe('Test GetPlayerScore Integration Test', () => {
-    test('If GetPlayerScore is an API', async () => {
+describe('Test PlayerScore Integration APIs Test', () => {
+    test('Test All PlayerScore APIs Integration Test', async () => {
         const event = APIGatewayRequest({
             body: {
                 "name": "Sam",
@@ -18,6 +18,7 @@ describe('Test GetPlayerScore Integration Test', () => {
             method: 'post'
         })
         const res = await createPlayerScore.handler(event); 
+        expect(res.statusCode).toBe(200);
 
         const event2 = APIGatewayRequest({            
             pathParameters: {
@@ -28,17 +29,15 @@ describe('Test GetPlayerScore Integration Test', () => {
         const res2 = await getPlayerScore.handler(event2);  
         const resBody = JSON.parse(res2.body);
         expect(resBody.name).toBe("Sam"); 
-    });
+        expect(res.statusCode).toBe(200);
 
-    test('Dynamo Write Test', async() => {
-        try {
-            const validTableName = 'player-point-aws';
-            const data = { ID: '1234', score: 25, name: 'Chirs', game: "1234",gameIndex:"1234"};
-            const res = await Dynamo.put(data, validTableName);        
-            expect(res.name).toEqual(data.name);
-        }
-        catch(exp) {
-            console.log('Logged Exception : '+ exp);
-        }
-    })
+        const event3 = APIGatewayRequest({            
+            pathParameters: {
+                    ID : '12'
+            },
+            method: 'delete'
+        });
+        const res3 = await deletePlayerScore.handler(event3);          
+        expect(res3.statusCode).toBe(200);
+    });
 });

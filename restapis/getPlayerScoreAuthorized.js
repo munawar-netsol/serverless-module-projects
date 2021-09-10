@@ -8,7 +8,9 @@ exports.handler = async event => {
     }
     const id = event.pathParameters.ID;
     const tableName = process.env.tableName;
-    const res = await Dynamo.get(id, tableName).catch (err => {
+    const res = await Dynamo.get({
+        ID : id
+    }, tableName).catch (err => {
             const er = err.message;
             console.log(er);
             return Responses._400({ message: er });            

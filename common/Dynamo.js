@@ -18,45 +18,41 @@ const documentClient = new AWS.DynamoDB.DocumentClient(options);
 
 
 const Dynamo = {
-    async get(id, tableName) {
+    async get(key, tableName) {
         const params = {
             TableName: tableName,
-            Key : {
-                ID: id
-            }
+            Key : key
         }
         const data = await documentClient.get(params).promise();
         
         if (!data || !data.Item)
-            throw Error ('Error fetching the data for ${ID} from ${tableName}');
+            throw Error ('Error fetching the data for ${key} from ${tableName}');
         
         return data.Item;
     },
 
-    async put(user, tableName) {
+    async put(data, tableName) {
         const params = {
             TableName: tableName,
-            Item: user
+            Item: data
         }
         const res = await documentClient.put(params).promise();
         
         if (!res)
-            throw Error ('Error writing the data for ${user.ID} from ${tableName}');
+            throw Error ('Error writing the data for ${data} from ${tableName}');
         
-        return user;
+        return data;
     },
 
-    async delete(user, tableName) {
+    async delete(key, tableName) {
         const params = {
             TableName: tableName,
-            Key: {
-                ID: user
-              }
+            Key: key
         }
         const res = await documentClient.delete(params).promise();
         
         if (!res)
-            throw Error ('Error writing the data for ${user.ID} from ${tableName}');
+            throw Error ('Error writing the data for ${key} from ${tableName}');
         
         return params.Key;
     },
@@ -71,7 +67,7 @@ const Dynamo = {
           const res = await documentClient.query(params).promise();
             
         if (!res)
-            throw Error ('Error writing the data for ${user.ID} from ${tableName}');
+            throw Error ('Error writing the data for ${key} from ${tableName}');
         return res.Items;
     }
 

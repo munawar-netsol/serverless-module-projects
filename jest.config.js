@@ -3,3 +3,4 @@ module.exports = {
     //preset: '@shelf/jest-dynamodb'
     preset: "jest-dynalite"
 }
+

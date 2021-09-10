@@ -10,7 +10,9 @@ exports.handler = async event => {
     let ID = event.pathParameters.ID;
     
     const newUser = 
-        await Dynamo.get(ID, tableName)
+        await Dynamo.get({
+            ID
+        }, tableName)
             .catch (err => {
                 console.log('Error in dynamo read: '+ err);
                 return null;
