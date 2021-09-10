@@ -139,7 +139,7 @@ resources:
                   - /*
               Principal: '*'
 
-    MyDynamoDBTable:
+    ChatAppDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
         TableName: ${self:custom.chatAppTableName}
