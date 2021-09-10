@@ -111,7 +111,7 @@ functions:
     handler: chatserver/messages.handler
     events:
       - websocket:
-          route: $messages
+          route: messages
   websocket-default:
     handler: chatserver/default.handler
     events:
