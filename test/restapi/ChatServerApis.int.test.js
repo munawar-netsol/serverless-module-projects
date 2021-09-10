@@ -1,7 +1,7 @@
 const APIGatewayRequest = require('../../common/getApiGateway');
 const connect = require('../../chatserver/connect');
 const disconnect = require('../../chatserver/disconnect');
-const message = require('../../chatserver/message');
+const messages = require('../../chatserver/messages');
 
 jest.setTimeout(30000);
 describe('Test ChatServer APIs Integration Test', () => {
@@ -27,7 +27,7 @@ describe('Test ChatServer APIs Integration Test', () => {
             method: 'get'
         })
         try {
-            await message.handler(event2);         
+            await messages.handler(event2);         
         }
         catch (ex) {
             //console.log('Error in sending message in ChatServer:' + ex);
