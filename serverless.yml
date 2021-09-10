@@ -12,15 +12,17 @@ provider:
       Action:
         - dynamodb:*
         - s3:*
+        - ses:*
       Resource: '*'
   environment:
     tableName: ${self:custom.tableName}
     chatAppTableName: ${self:custom.chatAppTableName}
     bucketName: ${self:custom.bucketName}
-
+    signupTableName: ${self:custom.signupTableName}
 custom:
   tableName: player-point-aws
   chatAppTableName: chat-app-table
+  signupTableName: sign-up-table
   bucketName: serverlessmoduleprojectbucket1
   dynamodb:
     stages:
@@ -43,6 +45,7 @@ plugins:
   - serverless-plugin-scripts
   - serverless-s3-local
   - serverless-webpack
+  - serverless-step-functions
 package:
   - individually: true
   
@@ -117,6 +120,24 @@ functions:
     events:
       - websocket:
           route: $default
+  addSignUp:
+    handler: stepfunctions/addSignUp.handler
+  getSignUp:
+    handler: stepfunctions/getSignUp.handler
+  sendReminderEmail:
+    handler: stepfunctions/sendReminderEmail.handler
+
+stepFunctions:
+  validate: true
+  stateMachines:
+    reminderEmail:
+      name: reminderEmail
+      events:
+        - http:
+            path: send-reminder-email
+            method: post
+            cors: true
+      definition: ${file(./stepFunctions.yml)}
 resources:
   Resources:
     MyAWSS3Bucket:
@@ -178,6 +199,21 @@ resources:
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
+
+    SignupTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ${self:custom.signupTableName}
+        AttributeDefinitions:
+          - AttributeName: ID
+            AttributeType: S
+        KeySchema:
+          - AttributeName: ID
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 5
+          WriteCapacityUnits: 5
+
     MyAWSCognitoUserPool:
       Type: AWS::Cognito::UserPool
       Properties:

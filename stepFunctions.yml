@@ -1,0 +1,68 @@
+Comment: This is our state machine to send email after 5 seconds.
+StartAt: AddEmailToDB
+States:
+  AddEmailToDB:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    OutputPath: "$.Payload"    
+    Parameters:
+      Payload:
+        Input.$: '$'
+      # FunctionName: arn:aws:lambda:us-east-1:636770137098:function:ContractAPI:$LATEST
+      FunctionName: { "Fn::Join" : [":", ["arn:aws:lambda:us-east-1", {"Ref":"AWS::AccountId"}, "function:${self:service}-${self:provider.stage}-addSignUp"]] }
+    Retry:
+    - ErrorEquals:
+      - Lambda.ServiceException
+      - Lambda.AWSLambdaException
+      - Lambda.SdkClientException
+      IntervalSeconds: 2
+      MaxAttempts: 6
+      BackoffRate: 2
+    Next: Wait
+  Wait:
+    Type: Wait
+    Seconds: 1
+    Next: getSignUp
+  getSignUp:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    OutputPath: "$.Payload"    
+    Parameters:
+      Payload:
+        Input.$: '$'
+      FunctionName: { "Fn::Join" : [":", ["arn:aws:lambda:us-east-1", {"Ref":"AWS::AccountId"}, "function:${self:service}-${self:provider.stage}-getSignUp"]] }
+    Retry:
+    - ErrorEquals:
+      - Lambda.ServiceException
+      - Lambda.AWSLambdaException
+      - Lambda.SdkClientException
+      IntervalSeconds: 2
+      MaxAttempts: 6
+      BackoffRate: 2
+    Next: Choice
+  Choice:
+    Type: Choice
+    Choices:
+      - Variable: "$.played"
+        StringEquals: 'true'
+        Next: Success
+    Default: SendReminderEmail
+  Success:
+    Type: Succeed
+  SendReminderEmail:
+    Type: Task
+    Resource: arn:aws:states:::lambda:invoke
+    OutputPath: "$.Payload"    
+    Parameters:
+      Payload:
+        Input.$: '$'
+      FunctionName: { "Fn::Join" : [":", ["arn:aws:lambda:us-east-1", {"Ref":"AWS::AccountId"}, "function:${self:service}-${self:provider.stage}-sendReminderEmail"]] }
+    Retry:
+    - ErrorEquals:
+      - Lambda.ServiceException
+      - Lambda.AWSLambdaException
+      - Lambda.SdkClientException
+      IntervalSeconds: 2
+      MaxAttempts: 6
+      BackoffRate: 2
+    End: true
