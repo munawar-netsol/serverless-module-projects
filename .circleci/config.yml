@@ -7,16 +7,18 @@ jobs:
             - image: circleci/node:16.8.0
         steps:
             - checkout
-            - run:
-                  command: sudo npm i -g serverless npm@latest
-            - run:
-                  command: sudo npm i -g jest
-            - run:
-                  command: npm install
-            - run:
-                  command: chmod +x ./.circleci/install-credentials.sh
-            - run:
-                  command: ./.circleci/install-credentials.sh
+            - node/with-cache:
+                steps:
+                    - run:
+                        command: sudo npm i -g serverless npm@latest
+                    - run:
+                        command: sudo npm i -g jest
+                    - run:
+                        command: npm install
+                    - run:
+                        command: chmod +x ./.circleci/install-credentials.sh
+                    - run:
+                        command: ./.circleci/install-credentials.sh
             - run:
                   command: sls deploy
 workflows:

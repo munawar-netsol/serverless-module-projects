@@ -33,7 +33,20 @@ const S3 = {
             console.log("S3 get object error: "+ ex);
         });
         return data;
+    },
+    async uploadImageObject(bucketName, fileName, content, mime, acl) {
+        var params = {
+            Body: content, 
+            Bucket: bucketName, 
+            Key: fileName,
+            ContentType: mime,
+            ACL: acl
+           };
+        const data = await s3.putObject(params).promise()
+        .catch(ex => {
+            console.log("S3 get object error: "+ ex);
+        });        
+        return data;
     }
-
 }
 module.exports = S3

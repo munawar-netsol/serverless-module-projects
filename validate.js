@@ -1,3 +1,6 @@
+
+
+/*
 const validateHooks = require('./common/ValidationHook');
 
 const yup = require('yup');
@@ -12,8 +15,6 @@ let schema = yup.object().shape({
   }),
 });
 
-
-/*
 const validate = async (body) => {
     const val = await schema.isValid(body).catch(ex =>
     {

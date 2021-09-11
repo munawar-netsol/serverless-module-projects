@@ -15,15 +15,18 @@ provider:
         - ses:*
       Resource: '*'
   environment:
+    region: us-east-1
     tableName: ${self:custom.tableName}
     chatAppTableName: ${self:custom.chatAppTableName}
     bucketName: ${self:custom.bucketName}
+    imageBucketName: ${self:custom.imageBucketName}
     signupTableName: ${self:custom.signupTableName}
 custom:
   tableName: player-point-aws
   chatAppTableName: chat-app-table
   signupTableName: sign-up-table
   bucketName: serverlessmoduleprojectbucket1
+  imageBucketName: serverlessmoduleprojectimagebucket1
   dynamodb:
     stages:
       - dev
@@ -87,6 +90,13 @@ functions:
           path: put-object/{fileName}
           method: post
           cors: true
+  uploadImage:
+    handler: restapis/uploadImage.handler
+    events:
+      - http:
+          path: upload-image
+          method: post
+          cors: true
   getPlayerScoreAuthorized:
     handler: restapis/getPlayerScoreAuthorized.handler
     events:
@@ -143,7 +153,7 @@ resources:
     MyAWSS3Bucket:
       Type: AWS::S3::Bucket
       Properties:        
-        BucketName: ${self:custom.bucketName}     
+        BucketName: ${self:custom.bucketName}   
     MyAWSS3BucketPolicy:
       Type: AWS::S3::BucketPolicy
       Properties:
@@ -159,7 +169,11 @@ resources:
                   - !Ref MyAWSS3Bucket
                   - /*
               Principal: '*'
-
+    MyAWSS3ImageBucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.imageBucketName}
+        AccessControl: PublicRead
     ChatAppDynamoDBTable:
       Type: AWS::DynamoDB::Table
       Properties:
