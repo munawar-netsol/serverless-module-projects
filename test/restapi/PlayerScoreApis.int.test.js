@@ -3,7 +3,7 @@ const createPlayerScore = require('../../restapis/createPlayerScore');
 const getPlayerScore = require('../../restapis/getPlayerScore');
 const deletePlayerScore = require('../../restapis/deletePlayerScore');
 
-jest.setTimeout(30000);
+jest.setTimeout(3000);
 describe('Test PlayerScore Integration APIs Test', () => {
     test('Test All PlayerScore APIs Integration Test', async () => {
         const event = APIGatewayRequest({
