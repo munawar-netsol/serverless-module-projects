@@ -23,8 +23,8 @@ jobs:
                 - ~/nvm/v16.8.0/bin/serverless
                 - ~/nvm/v16.8.0/lib/node_modules/jest
                 - ~/nvm/v16.8.0/bin/jest         
-            - run: sls deploy
-            
+            - run: npm run test
+
 workflows:
     build-and-deploy:
         jobs:
