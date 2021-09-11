@@ -24,6 +24,7 @@ jobs:
                 - ~/nvm/v16.8.0/lib/node_modules/jest
                 - ~/nvm/v16.8.0/bin/jest         
             - run: sls deploy
+            
 workflows:
     build-and-deploy:
         jobs:
