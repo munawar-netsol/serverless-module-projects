@@ -10,17 +10,13 @@ jobs:
             - restore_cache:
                 keys:
                 - v1-deps-{{ checksum "package.json" }}
-            - run: sudo npm i -g serverless npm@latest
-            - run: sudo npm i -g jest
             - run: npm install
             - run: chmod +x ./.circleci/install-credentials.sh
             - run: ./.circleci/install-credentials.sh
             - save_cache:
                 key: v1-deps-{{ checksum "package.json" }}
                 paths:
-                - node_modules   
-                - /usr/local/lib/node_modules/serverless
-                - /usr/local/lib/node_modules/jest         
+                - node_modules        
             - run: sls deploy
 workflows:
     build-and-deploy:
