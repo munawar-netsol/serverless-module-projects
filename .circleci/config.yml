@@ -10,7 +10,7 @@ jobs:
             - restore_cache:
                 keys:
                 - v1-deps-{{ checksum "package.json" }}
-            - run: sudo npm i -g serverless npm@latest
+            #- run: sudo npm i -g serverless npm@latest
             - run: sudo npm i -g jest
             - run: npm install
             - run: chmod +x ./.circleci/install-credentials.sh
@@ -19,8 +19,8 @@ jobs:
                 key: v1-deps-{{ checksum "package.json" }}
                 paths:
                 - node_modules   
-                - ~/nvm/v16.8.0/lib/node_modules/serverless
-                - ~/nvm/v16.8.0/bin/serverless
+                #- ~/nvm/v16.8.0/lib/node_modules/serverless
+                #- ~/nvm/v16.8.0/bin/serverless
                 - ~/nvm/v16.8.0/lib/node_modules/jest
                 - ~/nvm/v16.8.0/bin/jest         
             - run: npm run test
