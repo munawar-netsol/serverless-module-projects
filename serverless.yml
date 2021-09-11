@@ -169,7 +169,7 @@ resources:
                   - !Ref MyAWSS3Bucket
                   - /*
               Principal: '*'
-    MyAWSS3ImageUploadBucket:
+    MyAWSS3ImageBucket:
       Type: AWS::S3::Bucket
       Properties:
         BucketName: ${self:custom.imageBucketName}
