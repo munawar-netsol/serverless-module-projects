@@ -22,7 +22,6 @@ jobs:
                 - /usr/local/lib/node_modules/serverless
                 - /usr/local/lib/node_modules/jest         
             - run: sls deploy
-
 workflows:
     build-and-deploy:
         jobs:
