@@ -18,7 +18,11 @@ jobs:
             - save_cache:
                 key: v1-deps-{{ checksum "package.json" }}
                 paths:
-                - node_modules            
+                - node_modules   
+                - ~/nvm/v16.8.0/lib/node_modules/serverless
+                - ~/nvm/v16.8.0/bin/serverless
+                - ~/nvm/v16.8.0/lib/node_modules/jest
+                - ~/nvm/v16.8.0/bin/jest         
             - run: sls deploy
 workflows:
     build-and-deploy:
