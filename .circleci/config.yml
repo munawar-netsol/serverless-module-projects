@@ -19,10 +19,8 @@ jobs:
                 key: v1-deps-{{ checksum "package.json" }}
                 paths:
                 - node_modules   
-                #- ~/nvm/v16.8.0/lib/node_modules/serverless
-                #- ~/nvm/v16.8.0/bin/serverless
-                - ~/nvm/v16.8.0/lib/node_modules/jest
-                - ~/nvm/v16.8.0/bin/jest         
+                #- /usr/local/lib/node_modules/serverless
+                - /usr/local/lib/node_modules/jest         
             - run: npm run test
 
 workflows:
