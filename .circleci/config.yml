@@ -10,6 +10,8 @@ jobs:
             - restore_cache:
                 keys:
                 - v1-deps-{{ checksum "package.json" }}
+            - run: sudo npm i -g serverless npm@latest
+            - run: sudo npm i -g jest
             - run: npm install
             - run: chmod +x ./.circleci/install-credentials.sh
             - run: ./.circleci/install-credentials.sh
